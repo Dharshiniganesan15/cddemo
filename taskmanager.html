@@ -1,193 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Task Manager</title>
-
-<style>
-
-body{
-    font-family: Arial, sans-serif;
-    background-color:#f2f2f2;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.container{
-    background:white;
-    padding:25px;
-    width:400px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
-    text-align:center;
-}
-
-h2{
-    margin-bottom:20px;
-}
-
-input{
-    padding:10px;
-    width:200px;
-}
-
-button{
-    padding:8px 12px;
-    margin:5px;
-    cursor:pointer;
-}
-
-ul{
-    list-style:none;
-    padding:0;
-    margin-top:20px;
-}
-
-li{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#f7f7f7;
-    padding:8px;
-    margin:6px 0;
-    border-radius:5px;
-}
-
-.task-text{
-    flex:1;
-    cursor:pointer;
-}
-
-.completed{
-    text-decoration: line-through;
-    color:gray;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <title>Task Manager - Add Only</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    input { padding: 8px; width: 200px; }
+    button { padding: 8px; margin-left: 5px; }
+    ul { margin-top: 20px; }
+    li { margin: 5px 0; }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+<h2>Task Manager (Add Only)</h2>
 
-<h2>Task Manager</h2>
-
-<input type="text" id="taskInput" placeholder="Enter a task">
+<input type="text" id="taskInput" placeholder="Enter task">
 <button onclick="addTask()">Add</button>
-<button onclick="clearTasks()">Clear All</button>
 
 <ul id="taskList"></ul>
 
-</div>
-
 <script>
+function addTask() {
+  const input = document.getElementById('taskInput');
+  const task = input.value.trim();
 
-window.onload = function(){
-    loadTasks();
-};
+  if (task === '') return;
 
-function addTask(){
+  const li = document.createElement('li');
+  li.textContent = task;
 
-    let taskInput = document.getElementById("taskInput");
-    let taskText = taskInput.value.trim();
+  document.getElementById('taskList').appendChild(li);
 
-    if(taskText === ""){
-        alert("Please enter a task");
-        return;
-    }
-
-    createTask(taskText,false);
-
-    taskInput.value="";
-
-    saveTasks();
+  input.value = '';
 }
-
-function createTask(text,completed){
-
-    let li = document.createElement("li");
-
-    let span = document.createElement("span");
-    span.className="task-text";
-    span.textContent=text;
-
-    if(completed){
-        span.classList.add("completed");
-    }
-
-    span.onclick=function(){
-        span.classList.toggle("completed");
-        saveTasks();
-    };
-
-    let editBtn = document.createElement("button");
-    editBtn.textContent="Edit";
-
-    editBtn.onclick=function(){
-
-        let newText = prompt("Edit task:", span.textContent);
-
-        if(newText !== null && newText.trim() !== ""){
-            span.textContent=newText;
-            saveTasks();
-        }
-    };
-
-    let deleteBtn = document.createElement("button");
-    deleteBtn.textContent="Delete";
-
-    deleteBtn.onclick=function(){
-        li.remove();
-        saveTasks();
-    };
-
-    li.appendChild(span);
-    li.appendChild(editBtn);
-    li.appendChild(deleteBtn);
-
-    document.getElementById("taskList").appendChild(li);
-}
-
-function clearTasks(){
-
-    document.getElementById("taskList").innerHTML="";
-
-    localStorage.removeItem("tasks");
-}
-
-function saveTasks(){
-
-    let tasks=[];
-
-    document.querySelectorAll("#taskList li").forEach(function(li){
-
-        let text = li.querySelector(".task-text").textContent;
-        let completed = li.querySelector(".task-text").classList.contains("completed");
-
-        tasks.push({
-            text:text,
-            completed:completed
-        });
-
-    });
-
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-function loadTasks(){
-
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    tasks.forEach(function(task){
-
-        createTask(task.text, task.completed);
-
-    });
-}
-
 </script>
 
 </body>
